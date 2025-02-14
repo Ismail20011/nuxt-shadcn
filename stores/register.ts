@@ -6,6 +6,8 @@ import { defineStore } from 'pinia';
 interface UserRegistration {
   list_plans_fhd : Array<Plan>,
   list_plans_4k : Array<Plan>,
+  list_countries : Array<any>,
+  list_cities : Array<any>,
    user_info : UserInfo,
 //   subscription: {
 //     plan: string
@@ -27,73 +29,8 @@ interface UserRegistration {
 
 export const useRegisterStore = defineStore('register', {
   state: (): UserRegistration => ({
-    list_plans_fhd: [{
-        package_id: "106",
-        package_name: "Basic",
-        package_type: "Monthly",
-        duration: 1,
-        duration_in: "mois",
-        price: "19.99"
-      },
-      {
-        package_id: "108",
-        package_name: "Premium",
-        package_type: "Quarterly",
-        duration: 3,
-        duration_in: "mois",
-        price: "53.97"
-      },
-      {
-        package_id: "109",
-        package_name: "Pro",
-        package_type: "Biannual",
-        duration: 6,
-        duration_in: "mois",
-        price: "95.94"
-      },
-      {
-        package_id: "104",
-        package_name: "Enterprise",
-        package_type: "Annual",
-        duration: 12,
-        duration_in: "mois",
-        price: "167.88"
-    }],
-
-    list_plans_4k : [
-        {
-            package_id: "106",
-            package_name: "Basic",
-            package_type: "Monthly",
-            duration: 1,
-            duration_in: "mois",
-            price: "19.99"
-          },
-          {
-            package_id: "108",
-            package_name: "Premium",
-            package_type: "Quarterly",
-            duration: 3,
-            duration_in: "mois",
-            price: "53.97"
-          },
-          {
-            package_id: "109",
-            package_name: "Pro",
-            package_type: "Biannual",
-            duration: 6,
-            duration_in: "mois",
-            price: "95.94"
-          },
-          {
-            package_id: "104",
-            package_name: "Enterprise",
-            package_type: "Annual",
-            duration: 12,
-            duration_in: "mois",
-            price: "167.88"
-        }
-    ],
+    list_plans_fhd: [],
+    list_plans_4k : [],
     user_info : {
         package_id:"",
         firstName: "",
@@ -103,6 +40,8 @@ export const useRegisterStore = defineStore('register', {
         country_id : -1,
         city_id : -1,
     },
+    list_countries : [],
+    list_cities : [],
 
     // personal: null,
     // verification: {
@@ -128,6 +67,37 @@ export const useRegisterStore = defineStore('register', {
   },
 
   actions: {
+
+    async getListPlans() {
+        try {
+            const response = await $fetch('https://france.thebroadwave.com/internal/api/packages/list.php', {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+    
+            if (response && response.data) {
+              this.list_plans_4k = response.data['4K'];
+              this.list_plans_fhd = response.data['FHD'];
+            }
+          } catch (error) {
+            this.error = 'Erreur lors de la récupération des plans'
+            console.error('Erreur:', error)
+            throw error
+          }
+    },
+
+    selectPackage(package_id : string) {
+        this.user_info.package_id = package_id
+    }
+
+    // async getListCountries(){
+
+    // }
+
+
+
     // setSubscriptionPlan(plan: { plan: string; price: number; duration: number }) {
     //   this.subscription = plan
     // },
@@ -240,35 +210,6 @@ export const useRegisterStore = defineStore('register', {
 //         return { success: false, error }
 //       }
 //     },
-async getListPlans() {
-    try {
-      // Utiliser $fetch de Nuxt
-      const response = await $fetch('https://france.thebroadwave.com/internal/api/packages/list.php', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        // onRequest({ request, options }) {
-        //   console.log('Requête en cours:', request)
-        //   console.log('Options:', options)
-        // },
-        // onResponse({ request, response, options }) {
-        //   console.log('Réponse reçue:', response._data.data);
-        //   list_plans_fhd.value = response._data.data;
-          
-        // },
-        // onRequestError({ request, error }) {
-        //   console.error('Erreur de requête:', error)
-        // }
-      })
-      if(response){
-        console.log('Réponse reçue:', response);
-      }
-    } catch (error) {
-      console.error('Erreur lors de la récupération des plans:', error)
-      throw error
-    }
-  }
 
   },
 

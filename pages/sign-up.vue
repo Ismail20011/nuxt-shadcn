@@ -67,17 +67,19 @@
 
         </div>
 
-
       </div>
-
+      
       <div class="fixed bottom-0 left-0 right-0 border-t border-gray-100 bg-white p-4 mt-6">
         <div class="max-w-7xl mx-auto px-4">
           <div class="flex items-center justify-end gap-4">
             <button
+              v-if="currentStep>1"
+              @click="changeStep(currentStep-1)"
               class="text-primary/90 bg-primary/10 hover:bg-primary/20 px-6 py-2 rounded-lg transition-colors duration-200">
               Retour
             </button>
             <button type="submit"
+              :disabled="userInfo.package_id==''"
               class="bg-primary hover:bg-primary/70 text-white px-6 py-2 rounded-lg transition-colors duration-200">
               Continuer
             </button>
@@ -92,17 +94,22 @@
 const { locale } = useI18n()
 const { switchLanguage } = useLanguage()
 
-const registerStore = useRegisterStore();
+const store = useRegisterStore();
 
-const plans = computed(() => registerStore.list_plans)
+const userInfo = computed(()=>{
+  return store.user_info;
+})
+
 
 const handleSignup = () => {
-  console.log("hello ");
+  if(currentStep.value = 1){
+    changeStep(2);
+  }
 }
 
 
 onMounted(() => {
-  registerStore.getListPlans();
+  store.getListPlans();
 });
 
 const currentStep = ref(1);
@@ -124,10 +131,6 @@ const steps = [
     description: '',
   },
 ]
-
-const selectPlan = (planKey) => {
-  console.log(planKey);
-}
 
 const changeStep = (stepNumber) => {
   currentStep.value = stepNumber;

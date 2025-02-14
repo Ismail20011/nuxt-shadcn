@@ -72,7 +72,7 @@
                {{ parseFloat(item.price).toFixed(2) }} €
              </div>
              <div class="text-gray-500 text-xs sm:text-sm font-semibold">
-               15.99 €/mois
+              {{ calculateMonthlyRate(item.price,item.duration) }} €/mois
              </div>
            </div>
          </div>
@@ -85,23 +85,32 @@
 <script setup>
 import { ref } from 'vue'
 
-const selectedPlan = ref(null);
+
 
 const store = useRegisterStore();
 
+const selectedPlan = computed(()=>{
+  return store.user_info.package_id ;
+})
 
 const packages = computed(()=>{
   return quality.value === 'FHD' ? store.list_plans_fhd : store.list_plans_4k;
 })
 
-const selectPlan = (months) => {
-  selectedPlan.value = months
+const selectPlan = (package_id ) => {
+  store.selectPackage(package_id);
 };
 
 const quality = ref('FHD');
 
 const toggleQuality = () => {
   quality.value = quality.value === 'FHD' ? '4K' : 'FHD'
+}
+
+const calculateMonthlyRate = (price, duration) => {
+  // Convertir le prix en nombre et calculer le taux mensuel
+  const monthlyRate = (parseFloat(price) / duration).toFixed(2)
+  return monthlyRate
 }
 
 
