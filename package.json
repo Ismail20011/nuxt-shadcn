@@ -1,0 +1,44 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "dev": "nuxt dev",
+    "build:dev": "dotenv -e .env.development nuxt build",
+    "build:prod": "dotenv -e .env.production nuxt build",
+    "build:staging": "dotenv -e .env.staging nuxt build",
+    "start:dev": "dotenv -e .env.development nuxt start",
+    "start:prod": "dotenv -e .env.production nuxt start"
+  },
+  "dependencies": {
+    "@nuxt/icon": "^1.10.3",
+    "@nuxtjs/color-mode": "^3.5.2",
+    "@nuxtjs/i18n": "^9.0.0",
+    "@nuxtjs/tailwindcss": "^6.13.1",
+    "@pinia/nuxt": "^0.9.0",
+    "@vee-validate/nuxt": "^4.15.0",
+    "@vee-validate/yup": "^4.15.0",
+    "@vee-validate/zod": "^4.15.0",
+    "@vueuse/core": "^12.5.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.473.0",
+    "nuxt": "^3.15.2",
+    "nuxt-icons": "^3.2.1",
+    "radix-vue": "^1.9.12",
+    "tailwind-merge": "^2.6.0",
+    "tailwindcss-animate": "^1.0.7",
+    "vue": "latest",
+    "vue-router": "latest",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "@nuxt/types": "^2.18.1",
+    "shadcn-nuxt": "^0.11.3",
+    "typescript": "^5.7.3"
+  }
+}
