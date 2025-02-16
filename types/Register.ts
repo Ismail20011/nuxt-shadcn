@@ -13,7 +13,11 @@ export interface UserInfo {
     lastName: string,
     email: string,
     password: string,
-    country_id : number,
-    city_id : number,
+    confirmPassword : string,
+    country : string,
+    city : string,
+    phone_number : string,
+    address : string,
+    postal_code : string,
 }
 

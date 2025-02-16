@@ -32,58 +32,57 @@
                         <p class="mt-2 text-gray-600">{{ $t('login.access') }}</p>
                     </div>
         
-                    <form @submit.prevent="store.login('ii@gmail.com','ddd')" class="space-y-6">
+                    <Form 
+                        @submit.prevent="store.login(signInData.email, signInData.password)" 
+                        :validation-schema="validationSchema"
+                        class="space-y-6"
+                    >
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">{{ $t('login.email') }}</label>
-                            <div class="mt-1 relative">
+                        <label class="block text-sm font-medium text-gray-700">{{ $t('login.email') }}</label>
+                        <div class="mt-1 relative">
                             <Icon name="ph:envelope" class="absolute left-3 top-3 text-gray-400" size="20" />
-                            <input 
-                                v-model="signInData.email"
-                                type="email" 
-                                :placeholder="$t('login.emailPlaceholder').replace('{at}', '@')"
-                                class="pl-10 block w-full rounded-lg border border-gray-300 py-2.5"
+                            <Field
+                            name="email"
+                            type="email"
+                            :placeholder="$t('login.emailPlaceholder').replace('{at}', '@')"
+                            class="pl-10 block w-full rounded-lg border border-gray-300 py-2.5"
                             />
-                            </div>
+                            <ErrorMessage name="email" class="text-red-500 text-sm mt-1" />
                         </div>
-        
+                        </div>
+
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">{{ $t('login.password') }}</label>
-                            <div class="mt-1 relative">
+                        <label class="block text-sm font-medium text-gray-700">{{ $t('login.password') }}</label>
+                        <div class="mt-1 relative">
                             <Icon name="ph:lock" class="absolute left-3 top-3 text-gray-400" size="20" />
-                            <input 
-                                v-model="signInData.password"
-                                :type="showPassword ? 'text' : 'password'" 
-                                class="pl-10 block w-full rounded-lg border border-gray-300 py-2.5"
+                            <Field
+                            name="password"
+                            :type="showPassword ? 'text' : 'password'"
+                            class="pl-10 block w-full rounded-lg border border-gray-300 py-2.5"
                             />
-                            <button 
-                                @click="showPassword = !showPassword" 
-                                type="button"
-                                class="absolute right-3 top-3"
+                            <button
+                            @click="showPassword = !showPassword"
+                            type="button"
+                            class="absolute right-3 top-3"
                             >
-                                <Icon 
-                                :name="showPassword ? 'ph:eye-slash' : 'ph:eye'" 
+                            <Icon
+                                :name="showPassword ? 'ph:eye-slash' : 'ph:eye'"
                                 class="text-gray-400"
                                 size="20"
-                                />
+                            />
                             </button>
-                            </div>
+                            <ErrorMessage name="password" class="text-red-500 text-sm mt-1" />
                         </div>
-        
-                        <!-- <div class="flex items-center justify-between">
-                            <div class="flex items-center">
-                            <input type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600" />
-                            <label class="ml-2 text-sm text-gray-600">{{ $t('login.remember') }}</label>
-                            </div>
-                            <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                            {{ $t('login.forgot') }}
-                            </a>
-                        </div> -->
-        
-                        <button type="submit" class="w-full flex justify-center py-2.5 px-4 rounded-lg text-white bg-primary">
-                            {{ $t('login.submit') }}
+                        </div>
+
+                        <button 
+                        type="submit" 
+                        class="w-full flex justify-center py-2.5 px-4 rounded-lg text-white bg-primary"
+                        >
+                        {{ $t('login.submit') }}
                         </button>
-                    </form>
-        
+                    </Form>
+                            
                     <p class="mt-6 text-center text-sm text-gray-600">
                     {{ $t('login.noAccount') }}
                     <NuxtLink to="/sign-up" class="font-medium text-primary/90 hover:text-primary/60">
@@ -97,6 +96,8 @@
    </template>
    
    <script lang="ts" setup >
+   import { Form, Field, ErrorMessage } from 'vee-validate'
+    import * as yup from 'yup'
     const {locale} = useI18n();
     const showPassword = ref(false);
     const features = [
@@ -108,6 +109,18 @@
 
     const signInData = computed(() => {
         return store.user;
+    })
+    const { t } = useI18n()
+
+    const validationSchema = yup.object({
+        email: yup
+            .string()
+            .required(t('validation.emailRequired'))
+            .email(t('validation.emailInvalid')),
+        password: yup
+            .string()
+            .required(t('validation.passwordRequired'))
+            .min(8, t('validation.passwordMin'))
     })
 
     const {switchLanguage} = useLanguage()

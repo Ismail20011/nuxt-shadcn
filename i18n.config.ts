@@ -18,6 +18,14 @@ export default defineI18nConfig(() => ({
             "noAccount": "Pas encore de compte ?",
             "register": "S'inscrire"
         },
+        validation: {
+            "emailRequired": "L'e-mail est requis",
+            "emailInvalid": "Veuillez entrer un e-mail valide",
+            "passwordRequired": "Le mot de passe est requis",
+            "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
+            "passwordWeak": "Le mot de passe est trop faible",
+            "fieldRequired": "Ce champ est obligatoire"
+          },
         features: {
             "teamManagement": "Gestion d'équipe simplifiée",
             "projectManagement": "Tous vos projets au même endroit",
@@ -123,6 +131,12 @@ export default defineI18nConfig(() => ({
             "submit": "Sign in",
             "noAccount": "Don't have an account?",
             "register": "Sign up"
+        },
+        validation: {
+            emailRequired: 'Email is required',
+            emailInvalid: 'Please enter a valid email',
+            passwordRequired: 'Password is required',
+            passwordMin: 'Password must be at least 8 characters'
         },
         features: {
             "teamManagement": "Simplified team management",
