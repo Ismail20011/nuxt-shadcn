@@ -33,7 +33,7 @@
                     </div>
         
                     <Form 
-                        @submit.prevent="store.login(signInData.email, signInData.password)" 
+                        @submit="handelLogin" 
                         :validation-schema="validationSchema"
                         class="space-y-6"
                     >
@@ -46,6 +46,7 @@
                             type="email"
                             :placeholder="$t('login.emailPlaceholder').replace('{at}', '@')"
                             class="pl-10 block w-full rounded-lg border border-gray-300 py-2.5"
+                            v-model="signInData.email"
                             />
                             <ErrorMessage name="email" class="text-red-500 text-sm mt-1" />
                         </div>
@@ -59,6 +60,7 @@
                             name="password"
                             :type="showPassword ? 'text' : 'password'"
                             class="pl-10 block w-full rounded-lg border border-gray-300 py-2.5"
+                            v-model="signInData.password"
                             />
                             <button
                             @click="showPassword = !showPassword"
@@ -97,6 +99,7 @@
    
    <script lang="ts" setup >
    import { Form, Field, ErrorMessage } from 'vee-validate'
+   import { useForm, useField } from 'vee-validate'
     import * as yup from 'yup'
     const {locale} = useI18n();
     const showPassword = ref(false);
@@ -110,7 +113,14 @@
     const signInData = computed(() => {
         return store.user;
     })
+
+    
     const { t } = useI18n()
+
+    const handelLogin = () =>{
+        store.login();
+    }
+    
 
     const validationSchema = yup.object({
         email: yup
@@ -122,6 +132,10 @@
             .required(t('validation.passwordRequired'))
             .min(8, t('validation.passwordMin'))
     })
+    // Setup form validation
+    // const { handelLogin, errors } = useForm({
+    // validationSchema
+    // })
 
     const {switchLanguage} = useLanguage()
 

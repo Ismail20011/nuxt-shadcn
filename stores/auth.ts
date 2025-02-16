@@ -9,9 +9,6 @@ export const useAuthStore = defineStore('auth', {
         role: '',
         token: ''
     },
-    package: null,
-
-    currentStep: 1
   }),
 
   actions: {
@@ -19,33 +16,20 @@ export const useAuthStore = defineStore('auth', {
       this.user = user
     },
 
-    setPackage(pkg: any) {
-      this.package = pkg
-    },
-
-    nextStep() {
-      this.currentStep++
-    },
-
-    previousStep() {
-      this.currentStep--
-    },
-
-    async login(email: string, password: string) {
-      const { api } = useApi();
+    async login() {
       try {
-        const response = await api('/auth/login', {
+        const response = await $fetch('https://france.thebroadwave.com/internal/api/auth/login.php', {
           method: 'POST',
-          body: {email:email,password:password}
+          body: {email:this.user.email,password:this.user.password},
+          // headers: {
+          //   'Content-Type': 'application/json'
+          // }
         })
+
         console.log('dddd',response);
-        // this.token = response.token
-        // this.user = response.user
-        // this.isAuthenticated = true
-        
-        // Stocker le token
-        // localStorage.setItem('token', response.token)
       } catch (error) {
+        this.error = 'Erreur lors de la récupération des plans'
+        console.error('Erreur:', error)
         throw error
       }
     },

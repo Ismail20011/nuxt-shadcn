@@ -55,6 +55,11 @@ export default defineNuxtConfig({
           'Access-Control-Allow-Headers': 'Content-Type, Authorization'
         }
       }
+    },
+    routeRules: {
+      '/api/login': {
+        proxy: 'https://france.thebroadwave.com/internal/api/auth/login.php'
+      }
     }
   }
 })
