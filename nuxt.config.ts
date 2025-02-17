@@ -43,23 +43,23 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-22',
   
-  nitro: {
-    devProxy: {
-      '/api': {
-        target: process.env.API_BASE_URL,
-        changeOrigin: true,
-        prependPath: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }
-      }
-    },
-    routeRules: {
-      '/api/login': {
-        proxy: 'https://france.thebroadwave.com/internal/api/auth/login.php'
-      }
-    }
-  }
+  // nitro: {
+  //   devProxy: {
+  //     '/api': {
+  //       target: process.env.API_BASE_URL,
+  //       changeOrigin: true,
+  //       prependPath: true,
+  //       headers: {
+  //         'Access-Control-Allow-Origin': '*',
+  //         'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //         'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+  //       }
+  //     }
+  //   },
+  //   routeRules: {
+  //     '/api/login': {
+  //       proxy: 'https://france.thebroadwave.com/internal/api/auth/login.php'
+  //     }
+  //   }
+  // }
 })

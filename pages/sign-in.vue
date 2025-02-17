@@ -1,13 +1,13 @@
 <template>
     <div class="min-h-screen bg-gray-50">
-        <select 
-            :value="locale" 
-            @change="switchLanguage($event.target.value)"
-            class="absolute top-4 right-4 rounded-lg border p-2"
-        >
-            <option value="fr">Français</option>
-            <option value="en">English</option>
-        </select>
+        <div class="absolute top-4 right-4">
+            <DynamicSelect
+                v-model="locale"
+                :items="[{ value: 'fr', label: 'Français' },{ value: 'en', label: 'English' }]"
+                emptyMessage="No languague found"
+            />
+        </div>
+        
    
         <div class="flex min-h-screen">
             <!-- Sidebar -->
@@ -98,8 +98,7 @@
    </template>
    
    <script lang="ts" setup >
-   import { Form, Field, ErrorMessage } from 'vee-validate'
-   import { useForm, useField } from 'vee-validate'
+    import { Form, Field, ErrorMessage } from 'vee-validate'
     import * as yup from 'yup'
     const {locale} = useI18n();
     const showPassword = ref(false);
@@ -122,21 +121,16 @@
     }
     
 
-    const validationSchema = yup.object({
-        email: yup
-            .string()
-            .required(t('validation.emailRequired'))
-            .email(t('validation.emailInvalid')),
-        password: yup
-            .string()
-            .required(t('validation.passwordRequired'))
-            .min(8, t('validation.passwordMin'))
-    })
-    // Setup form validation
-    // const { handelLogin, errors } = useForm({
-    // validationSchema
-    // })
-
-    const {switchLanguage} = useLanguage()
-
+    const validationSchema = computed(()=>{
+        return yup.object({
+            email: yup
+                .string()
+                .required(t('validation.emailRequired'))
+                .email(t('validation.emailInvalid')),
+            password: yup
+                .string()
+                .required(t('validation.passwordRequired'))
+                .min(8, t('validation.passwordMin'))
+        });
+    });
    </script>
