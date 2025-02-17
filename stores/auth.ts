@@ -21,9 +21,9 @@ export const useAuthStore = defineStore('auth', {
         const response = await $fetch('https://france.thebroadwave.com/internal/api/auth/login.php', {
           method: 'POST',
           body: {email:this.user.email,password:this.user.password},
-          // headers: {
-          //   'Content-Type': 'application/json'
-          // }
+          headers: {
+            'Content-Type': 'application/json'
+          }
         })
 
         console.log('dddd',response);

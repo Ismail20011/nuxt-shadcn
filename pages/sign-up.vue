@@ -1,7 +1,6 @@
 <template>
-  <!-- :validation-schema="validationSchema" -->
   <div class="min-h-screen bg-gray-50">
-    <Form @submit.prevent="handleSignup()">
+    <Form @submit="handleSignup" :validation-schema="validationSchema">
 
       <select :value="locale" @change="switchLanguage($event.target.value)"
         class="absolute top-4 right-4 rounded-lg border p-2">
@@ -18,9 +17,11 @@
             <StepperItem v-for="step in steps" :key="step.step"
               class="relative flex w-full flex-col items-center justify-center" :step="step.step"
               :active="currentStep >= step.step">
-              <StepperSeparator v-if="step.step !== steps.length"
-                class="absolute left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 block h-0.5 shrink-0 rounded-full bg-primary/60 "
-                :class="{ 'bg-gray-200': currentStep < step.step }" />
+              <StepperSeparator 
+                v-if="step.step !== steps.length"
+                class="absolute left-[calc(50%+20px)] right-[calc(-50%+10px)] top-5 block h-0.5 shrink-0 rounded-full bg-primary/60"
+                :class="{ 'bg-gray-200': currentStep < step.step }" 
+              />
 
               <StepperTrigger as-child>
                 <Button :variant="currentStep >= step.step ? 'default' : 'outline'" size="icon"
@@ -47,10 +48,10 @@
           </Stepper>
 
           <div class="w-full mx-auto px-10 " v-if="currentStep == 1">
-            <SubscriptionStep1 :plans="plans" />
+            <SubscriptionStep1 />
           </div>
 
-          <div class="w-full max-w-xl mx-auto mt-12" v-if="currentStep == 2">
+          <div class="w-full max-w-4xl mx-auto mt-12" v-if="currentStep == 2">
             <SubscriptionStep2 />
           </div>
 
@@ -79,7 +80,6 @@
               Retour
             </button>
             <button type="submit"
-              :disabled="userInfo.package_id==''"
               class="bg-primary hover:bg-primary/70 text-white px-6 py-2 rounded-lg transition-colors duration-200">
               Continuer
             </button>
@@ -91,6 +91,9 @@
 </template>
 
 <script setup>
+import { Form, Field, ErrorMessage, useForm } from 'vee-validate'
+import * as yup from 'yup'
+
 const { locale } = useI18n()
 const { switchLanguage } = useLanguage()
 
@@ -102,14 +105,16 @@ const userInfo = computed(()=>{
 
 
 const handleSignup = () => {
-  if(currentStep.value = 1){
+  if(currentStep.value == 1){
     changeStep(2);
   }
 }
 
 
 onMounted(() => {
+
   store.getListPlans();
+  store.fetchCountries();
 });
 
 const currentStep = ref(1);
@@ -136,28 +141,71 @@ const changeStep = (stepNumber) => {
   currentStep.value = stepNumber;
 }
 
-// const validationSchema = Yup.object().shape({
-//     dealership_name: Yup.string().required(),
-//     ein: Yup.string()
-//       .min(10, "This field must be at least 9 characters")
-//       .required()
-//       .nullable()
-//       .when({
-//         is: () => !!data.value.ein,
-//         then: (yup) => yup.required(),
-//       }),
-//     country: Yup.string().required(),
-//     firstname: Yup.string().required(),
-//     lastname: Yup.string().required(),
-//     business_title: Yup.string().required(),
-//     address: Yup.string().required(),
-//     city: Yup.string().required(),
-//     state: Yup.string().required(),
-//     zip: Yup.number().required(),
-//     email: Yup.string().required(),
-//     phone: Yup.string()
-//       .min(14, "This field must be at least 10 characters")
-//       .required(),
-//   });
+// Correct the Yup reference
+const validationSchema = computed(() => {
+  if (currentStep.value === 2) {
+    return yup.object().shape({
+      firstName: yup
+        .string()
+        .required('Le prénom est requis')
+        .min(2, 'Le prénom doit contenir au moins 2 caractères')
+        .max(50, 'Le prénom ne doit pas dépasser 50 caractères'),
+    
+      lastName: yup
+        .string()
+        .required('Le nom est requis')
+        .min(2, 'Le nom doit contenir au moins 2 caractères')
+        .max(50, 'Le nom ne doit pas dépasser 50 caractères'),
+      
+      email: yup
+        .string()
+        .required('L\'email est requis')
+        .email('Veuillez entrer un email valide'),
+      
+      phoneNumber: yup
+        .string()
+        .required('Le numéro de téléphone est requis')
+        .matches(/^[0-9]{9,10}$/, 'Numéro de téléphone invalide'),
+      
+      country: yup
+        .string()
+        .required('Le pays est requis'),
+      
+      city: yup
+        .string()
+        .required('La ville est requise'),
+      
+      address: yup
+        .string()
+        .required('L\'adresse est requise')
+        .min(5, 'L\'adresse doit contenir au moins 5 caractères')
+        .max(100, 'L\'adresse ne doit pas dépasser 100 caractères'),
+      
+      postalCode: yup
+        .string()
+        .required('Le code postal est requis')
+        .matches(/^[0-9]{5}$/, 'Code postal invalide'),
+      
+      password: yup
+        .string()
+        .required('Le mot de passe est requis')
+        .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+          'Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial'
+        ),
+      
+      confirmPassword: yup
+        .string()
+        .required('Veuillez confirmer le mot de passe')
+        .oneOf([yup.ref('password')], 'Les mots de passe ne correspondent pas')
+    })
+  }
+  else {
+    return yup.object().shape({}) // Return an empty schema for other steps
+  }
+})
 
+ 
+  
 </script>

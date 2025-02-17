@@ -9,6 +9,10 @@ interface UserRegistration {
   list_countries : Array<any>,
   list_cities : Array<any>,
    user_info : UserInfo,
+   countries: [],
+    cities: {},
+    loading: boolean,
+    error: any
 //   subscription: {
 //     plan: string
 //     price: number
@@ -46,6 +50,10 @@ export const useRegisterStore = defineStore('register', {
     },
     list_countries : [],
     list_cities : [],
+    countries: [],
+    cities: {},
+    loading: false,
+    error: null
 
     // personal: null,
     // verification: {
@@ -72,6 +80,58 @@ export const useRegisterStore = defineStore('register', {
 
   actions: {
 
+    async fetchCountries() {
+        try {
+          this.loading = true
+          this.error = null
+  
+          // Récupérer tous les pays
+          const response = await $fetch('https://restcountries.com/v3.1/all', {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json'
+            }
+          })
+  
+          // Transformer la réponse pour obtenir une liste simple
+          this.countries = response.map(country => ({
+            name: country.name.common,
+            // officialName: country.name.official,
+            code: country.cca2,
+            id: country.cca3,
+            // region: country.region,
+            // subregion: country.subregion,
+            // flag: country.flag,
+            // languages: country.languages ? Object.values(country.languages) : [],
+            // capital: country.capital ? country.capital[0] : null,
+            // borders: country.borders || []
+          })).sort((a, b) => a.name.localeCompare(b.name))
+  
+          return this.countries
+        } catch (error) {
+          this.error = 'Erreur lors de la récupération des pays'
+          console.error('Erreur de récupération des pays:', error)
+          throw error
+        } finally {
+          this.loading = false
+        }
+    },
+  
+    async fetchCitiesByCountryCode(countryCode) {
+        try {
+          const response = await $fetch(`https://api.example.com/cities/${countryCode}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json'
+            }
+          })
+      
+          return response.cities || [];
+        } catch (error) {
+          console.error('Erreur de récupération des villes:', error)
+          return []
+        }
+    },
     async getListPlans() {
         try {
             const response = await $fetch('https://france.thebroadwave.com/internal/api/packages/list.php', {
