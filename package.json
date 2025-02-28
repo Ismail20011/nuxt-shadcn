@@ -29,6 +29,7 @@
     "nuxt": "^3.15.2",
     "nuxt-icons": "^3.2.1",
     "radix-vue": "^1.9.12",
+    "sweetalert2": "^11.17.2",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "vue": "latest",

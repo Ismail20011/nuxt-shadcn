@@ -117,7 +117,7 @@ onMounted(() => {
   store.fetchCountries();
 });
 
-const currentStep = ref(1);
+const currentStep = ref(3);
 
 const steps = [
   {

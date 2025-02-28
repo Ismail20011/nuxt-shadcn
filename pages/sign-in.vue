@@ -100,6 +100,9 @@
    <script lang="ts" setup >
     import { Form, Field, ErrorMessage } from 'vee-validate'
     import * as yup from 'yup'
+
+    const store = useAuthStore();
+
     const {locale} = useI18n();
     const showPassword = ref(false);
     const features = [
@@ -107,17 +110,20 @@
         { icon: 'ph:folder-bold', key: 'projectManagement' },
         { icon: 'ph:chart-line-bold', key: 'analytics' }
     ];
-    const store = useAuthStore();
-
+    
     const signInData = computed(() => {
         return store.user;
     })
 
-    
     const { t } = useI18n()
 
     const handelLogin = () =>{
-        store.login();
+        store.login()
+        // .then((data)=>{
+        //     if(!data?.status){
+                
+        //     }
+        // });
     }
     
 
